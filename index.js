@@ -1,25 +1,31 @@
 function findMinAndRemoveSorted(array) {
-  let min = 0;
-  for (let i of array) {
-    if (array[i] < min) {
-      min = i;
-    }
-  }
-  return array.splice(min, 1);
+  return array.shift();
 }
 
-function merge(array1, array2) {
-  let newArray = [];
-  array1.forEach(item => {
-    newArray.push(item);
-  });
-  array2.forEach(item => {
-    newArray.push(item);
-  });
-  newArray.sort((a, b) => a - b);
-  return Array.from(new Set(newArray));
+function merge(firstSubarray, secondSubArray) {
+  let sorted = [];
+  while (firstSubarray.length != 0 && secondSubArray.length != 0) {
+    if (firstSubarray[0] < secondSubArray[0]) {
+      sorted.push(findMinAndRemoveSorted(firstSubarray));
+    } else {
+      sorted.push(findMinAndRemoveSorted(secondSubArray));
+    }
+  }
+  return sorted.concat(firstSubarray).concat(secondSubArray);
 }
 
 function mergeSort(array) {
-  return array.sort((a, b) => a - b);
+  let midpoint = array.length / 2;
+  let firstHalf = array.slice(0, midpoint);
+  let secondHalf = array.slice(midpoint, array.length);
+  let sorted;
+
+  if (array.length < 2) {
+    return array;
+  } else {
+    sorted = merge(mergeSort(firstHalf), mergeSort(secondHalf));
+  }
+  return sorted;
 }
+
+mergeSort([12, 10, 9, 14, 1, 3, 5, 11, 6, 15, 16, 13, 2, 4, 8, 7]);
